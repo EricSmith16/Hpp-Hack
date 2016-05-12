@@ -4,6 +4,8 @@
 
 function_s g_Function;
 
+double *g_Net;
+
 void function_s::AdjustSpeed(double x)
 {
 	if (g_Local.dwSpeedptr == 0) g_Local.dwSpeedptr = g_Local.SpeedPtr;
@@ -65,12 +67,14 @@ void function_s::GroundStrafe(float frametime, struct usercmd_s *cmd)
 		if (state == 1)
 		{
 			cmd->buttons &= ~IN_DUCK;
+			if (g_Local.flGroundAngle < cvar.gstrafe_slowdown_angle->value && (g_Local.iFlags & FL_ONGROUND)) { AdjustSpeed(cvar.gstrafe_slowdown->value <= 0 ? 0.000001 : cvar.gstrafe_slowdown->value); }
 			state = 2;
 			counts--;
 			return;
 		}
 		if (state == 2)
 		{
+			if (g_Local.flGroundAngle < cvar.gstrafe_slowdown_angle->value && (g_Local.iFlags & FL_ONGROUND)) { AdjustSpeed(cvar.gstrafe_slowdown->value <= 0 ? 0.000001 : cvar.gstrafe_slowdown->value); }
 			cmd->buttons |= IN_DUCK;
 			state = 1;
 			return;
@@ -82,6 +86,7 @@ void function_s::GroundStrafe(float frametime, struct usercmd_s *cmd)
 		if (cvar.gstrafe_standup->value && frame_standup >= cvar.gstrafe_standup_start->value) cmd->buttons |= IN_DUCK;
 		if ((g_Local.iFlags&FL_ONGROUND || frames <= g_Engine.pfnRandomFloat(frame[0], frame[1])) && state == 0 && counts == 0)
 		{
+			if (g_Local.flGroundAngle < cvar.gstrafe_slowdown_angle->value && (g_Local.iFlags & FL_ONGROUND)) { AdjustSpeed(cvar.gstrafe_slowdown->value <= 0 ? 0.000001 : cvar.gstrafe_slowdown->value); }
 			cmd->buttons |= IN_DUCK;
 			state = 1;
 			counts = g_Engine.pfnRandomLong(count[0], count[1]);
@@ -147,19 +152,23 @@ void function_s::FastRun(struct usercmd_s *cmd)
 		if (cfunc.FastRun && g_Local.iFlags&FL_ONGROUND)
 		{
 			static bool _FastRun = false;
-			if ((cmd->buttons&IN_FORWARD && cmd->buttons&IN_MOVELEFT) || (cmd->buttons&IN_BACK && cmd->buttons&IN_MOVERIGHT)) {
+			if ((cmd->buttons&IN_FORWARD && cmd->buttons&IN_MOVELEFT) || (cmd->buttons&IN_BACK && cmd->buttons&IN_MOVERIGHT)) 
+			{
 				if (_FastRun) { _FastRun = false; cmd->sidemove -= 89.6; cmd->forwardmove -= 89.6; }
 				else { _FastRun = true;  cmd->sidemove += 89.6; cmd->forwardmove += 89.6; }
 			}
-			else if ((cmd->buttons&IN_FORWARD && cmd->buttons&IN_MOVERIGHT) || (cmd->buttons&IN_BACK && cmd->buttons&IN_MOVELEFT)) {
+			else if ((cmd->buttons&IN_FORWARD && cmd->buttons&IN_MOVERIGHT) || (cmd->buttons&IN_BACK && cmd->buttons&IN_MOVELEFT)) 
+			{
 				if (_FastRun) { _FastRun = false; cmd->sidemove -= 89.6; cmd->forwardmove += 89.6; }
 				else { _FastRun = true;  cmd->sidemove += 89.6; cmd->forwardmove -= 89.6; }
 			}
-			else if (cmd->buttons&IN_FORWARD || cmd->buttons&IN_BACK) {
+			else if (cmd->buttons&IN_FORWARD || cmd->buttons&IN_BACK) 
+			{
 				if (_FastRun) { _FastRun = false; cmd->sidemove -= 126.6; }
 				else { _FastRun = true;  cmd->sidemove += 126.6; }
 			}
-			else if (cmd->buttons&IN_MOVELEFT || cmd->buttons&IN_MOVERIGHT) {
+			else if (cmd->buttons&IN_MOVELEFT || cmd->buttons&IN_MOVERIGHT) 
+			{
 				if (_FastRun) { _FastRun = false; cmd->forwardmove -= 126.6; }
 				else { _FastRun = true;  cmd->forwardmove += 126.6; }
 			}
@@ -170,6 +179,7 @@ void function_s::FastRun(struct usercmd_s *cmd)
 void function_s::CL_CreateMove(float frametime, usercmd_s *cmd, int active)
 {
 	AdjustSpeed(cvar.speed->value);
+	if (cvar.speed_engine->value != 0) *g_Net += cvar.speed_engine->value / 1000;
 	cl_entity_s *LocalEnt = g_Engine.GetLocalPlayer();
 	g_Local.bAlive = LocalEnt && !(LocalEnt->curstate.effects & EF_NODRAW) && LocalEnt->player && LocalEnt->curstate.movetype != 6 && LocalEnt->curstate.movetype != 0;
 	BunnyHop(frametime, cmd);

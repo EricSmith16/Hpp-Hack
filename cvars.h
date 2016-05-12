@@ -17,8 +17,11 @@ public:
 		nc(gstrafe_scroll_start)
 		nc(gstrafe_standup)
 		nc(gstrafe_standup_start)
+		nc(gstrafe_slowdown)
+		nc(gstrafe_slowdown_angle)
 
 		nc(speed)
+		nc(speed_engine)
 
 		nc(fastrun_nsd)
 		nc(fastrun_sidemove)
