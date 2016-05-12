@@ -11,6 +11,11 @@ bool cfunc_s::Gstrafe = false;
 void cfunc_s::GstrafeOn() { Gstrafe = true; }
 void cfunc_s::GstrafeOff() { Gstrafe = false; }
 
+bool cfunc_s::FastRun = false;
+void cfunc_s::FastRunOn() { FastRun = true; }
+void cfunc_s::FastRunOff() { FastRun = false; }
+void cfunc_s::FastRunSwitch() { FastRun = !FastRun; }
+
 void cfunc_s::Init()
 {
 	rnc(bhop_scroll_start, "hpp_bhop_scroll_start", "5 9")
@@ -28,5 +33,12 @@ void cfunc_s::Init()
 		rcmd("-hpp_gstrafe", GstrafeOff)
 
 		rnc(speed, "hpp_speed", "1")
+
+		rnc(fastrun_nsd, "hpp_fastrun_nsd", "1")
+		rnc(fastrun_sidemove, "hpp_fastrun_sidemove", "138")
+		rnc(fastrun_forwardmove, "hpp_fastrun_forwardmove", "267")
+		rcmd("+hpp_fastrun", FastRunOn)
+		rcmd("-hpp_fastrun", FastRunOff)
+		rcmd("hpp_switch_fastrun", FastRunSwitch)
 		
 }

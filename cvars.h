@@ -19,6 +19,10 @@ public:
 		nc(gstrafe_standup_start)
 
 		nc(speed)
+
+		nc(fastrun_nsd)
+		nc(fastrun_sidemove)
+		nc(fastrun_forwardmove)
 };
 extern cvars_s cvar;
 
@@ -33,5 +37,10 @@ public:
 	static bool Gstrafe;
 	static void GstrafeOn();
 	static void GstrafeOff();
+
+	static bool FastRun;
+	static void FastRunOn();
+	static void FastRunOff();
+	static void FastRunSwitch();
 };
 extern cfunc_s cfunc;

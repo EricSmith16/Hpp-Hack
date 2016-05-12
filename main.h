@@ -58,6 +58,8 @@ extern SCREENINFO g_Screen;
 extern char* BaseDir;
 
 #define M_PI 3.14159265358979323846
+#define POW(x) ((x)*(x))
+#define DegToRad(Angle)((M_PI/180.0)*Angle)
 
 struct local_s
 {
@@ -68,9 +70,11 @@ struct local_s
 	int iIndex;
 	int iFlags;
 	float Height;
+	float flXYspeed;
 	float flGroundAngle;
 	float flFallSpeed;
 	Vector vOrigin;
+	Vector vVelocity;
 };
 extern local_s g_Local;
 

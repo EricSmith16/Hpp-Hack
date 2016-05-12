@@ -89,6 +89,84 @@ void function_s::GroundStrafe(float frametime, struct usercmd_s *cmd)
 	}
 }
 
+void function_s::FastRun(struct usercmd_s *cmd)
+{
+	if (cvar.fastrun_nsd->value)
+	{
+		if (cfunc.FastRun && g_Local.iFlags&FL_ONGROUND)
+		{
+			if (!(cmd->buttons&(IN_FORWARD | IN_BACK | IN_MOVELEFT | IN_MOVERIGHT))) return;
+			if (cmd->buttons&IN_MOVELEFT&&cmd->buttons&IN_MOVERIGHT) { cmd->buttons &= ~(IN_MOVELEFT | IN_MOVERIGHT); }
+			if (cmd->buttons&IN_FORWARD&&cmd->buttons&IN_BACK) { cmd->buttons &= ~(IN_FORWARD | IN_BACK); }
+			float aaddtova;
+			if (cmd->buttons&IN_FORWARD)
+			{
+				if (cmd->buttons&IN_MOVELEFT) aaddtova = 45.0f;
+				else if (cmd->buttons&IN_MOVERIGHT) aaddtova = -45.0f;
+				else aaddtova = 0.0f;
+			}
+			else if (cmd->buttons&IN_BACK)
+			{
+				if (cmd->buttons&IN_MOVELEFT) aaddtova = 135.0f;
+				else if (cmd->buttons&IN_MOVERIGHT) aaddtova = -135.0f;
+				else aaddtova = 180.0f;
+			}
+			else if (cmd->buttons&IN_MOVELEFT) aaddtova = 90.0f;
+			else if (cmd->buttons&IN_MOVERIGHT) aaddtova = -90.0f;
+			if (g_Local.flXYspeed < 78)
+			{
+				cmd->forwardmove = 900;
+				cmd->sidemove = 0;
+				return;
+			}
+			bool dir_rig = true;
+			float yaw = atan2(g_Local.vVelocity.y, g_Local.vVelocity.x) * 180.0 / M_PI;
+			yaw -= aaddtova;
+			yaw = cmd->viewangles.y - yaw;
+			int fadif = yaw;
+			fadif = (fadif + 360) % 360;
+			dir_rig = fadif <= 180;
+			float x = cvar.fastrun_sidemove->value/*135.06374825035877480180939653038*/ * (dir_rig ? -1 : +1);
+			float y = cvar.fastrun_forwardmove->value/*267.87643402987823669025530311859*/;
+			float a = DegToRad(aaddtova);
+			float sinA = sin(a);
+			float cosA = cos(a);
+			cmd->sidemove = x*cosA - y*sinA;
+			cmd->forwardmove = y*cosA + x*sinA;
+			x = cmd->sidemove;
+			y = cmd->forwardmove;
+			float newa = DegToRad(-yaw);
+			sinA = sin(newa);
+			cosA = cos(newa);
+			cmd->sidemove = x*cosA - y*sinA;
+			cmd->forwardmove = y*cosA + x*sinA;
+		}
+	}
+	else
+	{
+		if (cfunc.FastRun && g_Local.iFlags&FL_ONGROUND)
+		{
+			static bool _FastRun = false;
+			if ((cmd->buttons&IN_FORWARD && cmd->buttons&IN_MOVELEFT) || (cmd->buttons&IN_BACK && cmd->buttons&IN_MOVERIGHT)) {
+				if (_FastRun) { _FastRun = false; cmd->sidemove -= 89.6; cmd->forwardmove -= 89.6; }
+				else { _FastRun = true;  cmd->sidemove += 89.6; cmd->forwardmove += 89.6; }
+			}
+			else if ((cmd->buttons&IN_FORWARD && cmd->buttons&IN_MOVERIGHT) || (cmd->buttons&IN_BACK && cmd->buttons&IN_MOVELEFT)) {
+				if (_FastRun) { _FastRun = false; cmd->sidemove -= 89.6; cmd->forwardmove += 89.6; }
+				else { _FastRun = true;  cmd->sidemove += 89.6; cmd->forwardmove -= 89.6; }
+			}
+			else if (cmd->buttons&IN_FORWARD || cmd->buttons&IN_BACK) {
+				if (_FastRun) { _FastRun = false; cmd->sidemove -= 126.6; }
+				else { _FastRun = true;  cmd->sidemove += 126.6; }
+			}
+			else if (cmd->buttons&IN_MOVELEFT || cmd->buttons&IN_MOVERIGHT) {
+				if (_FastRun) { _FastRun = false; cmd->forwardmove -= 126.6; }
+				else { _FastRun = true;  cmd->forwardmove += 126.6; }
+			}
+		}
+	}
+}
+
 void function_s::CL_CreateMove(float frametime, usercmd_s *cmd, int active)
 {
 	AdjustSpeed(cvar.speed->value);
@@ -96,4 +174,5 @@ void function_s::CL_CreateMove(float frametime, usercmd_s *cmd, int active)
 	g_Local.bAlive = LocalEnt && !(LocalEnt->curstate.effects & EF_NODRAW) && LocalEnt->player && LocalEnt->curstate.movetype != 6 && LocalEnt->curstate.movetype != 0;
 	BunnyHop(frametime, cmd);
 	GroundStrafe(frametime, cmd);
+	FastRun(cmd);
 }
