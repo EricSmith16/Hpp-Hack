@@ -8,7 +8,10 @@
 class cvars_s
 {
 public:
-
+	nc(bhop_scroll_start)
+		nc(bhop_scroll_count)
+		nc(bhop_standup)
+		nc(bhop_standup_start)
 };
 extern cvars_s cvar;
 
@@ -16,5 +19,8 @@ class cfunc_s
 {
 public:
 	static void Init();
+	static bool Bhop;
+	static void BhopOn();
+	static void BhopOff();
 };
 extern cfunc_s cfunc;

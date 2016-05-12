@@ -56,3 +56,24 @@ extern PColor24 Console_TextColor;
 extern SCREENINFO g_Screen;
 
 extern char* BaseDir;
+
+#define M_PI 3.14159265358979323846
+
+struct local_s
+{
+	bool bAlive;
+	int iUseHull;
+	int iIndex;
+	int iFlags;
+	float Height;
+	float flGroundAngle;
+	float flFallSpeed;
+	Vector vOrigin;
+};
+extern local_s g_Local;
+
+struct player_s
+{
+	Vector vOrigin;
+};
+extern player_s g_Player[33];
