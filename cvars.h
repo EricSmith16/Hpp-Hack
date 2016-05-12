@@ -12,6 +12,10 @@ public:
 		nc(bhop_scroll_count)
 		nc(bhop_standup)
 		nc(bhop_standup_start)
+		nc(gstrafe_scroll_count)
+		nc(gstrafe_scroll_start)
+		nc(gstrafe_standup)
+		nc(gstrafe_standup_start)
 };
 extern cvars_s cvar;
 
@@ -22,5 +26,9 @@ public:
 	static bool Bhop;
 	static void BhopOn();
 	static void BhopOff();
+
+	static bool Gstrafe;
+	static void GstrafeOn();
+	static void GstrafeOff();
 };
 extern cfunc_s cfunc;

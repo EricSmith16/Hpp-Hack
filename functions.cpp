@@ -41,9 +41,47 @@ void function_s::BunnyHop(float frametime, usercmd_s *cmd)
 	}
 }
 
+void function_s::GroundStrafe(float frametime, struct usercmd_s *cmd)
+{
+	int frame[2] = {}, count[2] = {};
+	g_Calculation.ScanFromCvar(cvar.gstrafe_scroll_count->string, count);
+	g_Calculation.ScanFromCvar(cvar.gstrafe_scroll_start->string, frame);
+	static int state, counts;
+	float frames = abs((g_Local.Height / g_Local.flFallSpeed * 2) / frametime);
+	float frame_standup = g_Local.flFallSpeed * frametime * 10;
+	if (counts > 0)
+	{
+		if (state == 1)
+		{
+			cmd->buttons &= ~IN_DUCK;
+			state = 2;
+			counts--;
+			return;
+		}
+		if (state == 2)
+		{
+			cmd->buttons |= IN_DUCK;
+			state = 1;
+			return;
+		}
+	}
+	else if (state != 0) { state = 0; counts = 0; }
+	if (cfunc.Gstrafe && g_Local.bAlive)
+	{
+		if (cvar.gstrafe_standup->value && frame_standup >= cvar.gstrafe_standup_start->value) cmd->buttons |= IN_DUCK;
+		if ((g_Local.iFlags&FL_ONGROUND || frames <= g_Engine.pfnRandomFloat(frame[0], frame[1])) && state == 0 && counts == 0)
+		{
+			cmd->buttons |= IN_DUCK;
+			state = 1;
+			counts = g_Engine.pfnRandomLong(count[0], count[1]);
+		}
+	}
+}
+
 void function_s::CL_CreateMove(float frametime, usercmd_s *cmd, int active)
 {
 	cl_entity_s *LocalEnt = g_Engine.GetLocalPlayer();
 	g_Local.bAlive = LocalEnt && !(LocalEnt->curstate.effects & EF_NODRAW) && LocalEnt->player && LocalEnt->curstate.movetype != 6 && LocalEnt->curstate.movetype != 0;
 	BunnyHop(frametime, cmd);
+	GroundStrafe(frametime, cmd);
 }
