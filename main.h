@@ -61,6 +61,8 @@ extern char* BaseDir;
 
 struct local_s
 {
+	DWORD SpeedPtr;
+	DWORD dwSpeedptr;
 	bool bAlive;
 	int iUseHull;
 	int iIndex;

@@ -4,6 +4,17 @@
 
 function_s g_Function;
 
+void function_s::AdjustSpeed(double x)
+{
+	if (g_Local.dwSpeedptr == 0) g_Local.dwSpeedptr = g_Local.SpeedPtr;
+	static double LastSpeed = 1;
+	if (x != LastSpeed)
+	{
+		*(double*)g_Local.dwSpeedptr = (x * 1000);
+		LastSpeed = x;
+	}
+}
+
 void function_s::BunnyHop(float frametime, usercmd_s *cmd)
 {
 	int frame[2] = {}, count[2] = {};
@@ -80,6 +91,7 @@ void function_s::GroundStrafe(float frametime, struct usercmd_s *cmd)
 
 void function_s::CL_CreateMove(float frametime, usercmd_s *cmd, int active)
 {
+	AdjustSpeed(cvar.speed->value);
 	cl_entity_s *LocalEnt = g_Engine.GetLocalPlayer();
 	g_Local.bAlive = LocalEnt && !(LocalEnt->curstate.effects & EF_NODRAW) && LocalEnt->player && LocalEnt->curstate.movetype != 6 && LocalEnt->curstate.movetype != 0;
 	BunnyHop(frametime, cmd);

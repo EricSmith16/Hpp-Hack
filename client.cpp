@@ -63,6 +63,12 @@ void HUD_Frame(double time)
 {
 	if (!FirstFrame)
 	{
+		cOffset* Offset = new cOffset;
+		while (!Offset->GetRendererInfo()) Sleep(90);
+		g_Local.SpeedPtr = 0;
+		g_Local.dwSpeedptr = 0;
+		Offset->SpeedPtr = (DWORD)Offset->SpeedHackPtr();
+		g_Local.SpeedPtr = Offset->SpeedPtr;
 		g_Screen.iSize = sizeof(SCREENINFO);
 		offset.ConsoleColorInitalize();
 		offset.SVCMessagesInitaizie();

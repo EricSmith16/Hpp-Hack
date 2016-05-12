@@ -26,5 +26,7 @@ void cfunc_s::Init()
 		rnc(gstrafe_standup_start, "hpp_gstrafe_standup_start", "6")
 		rcmd("+hpp_gstrafe", GstrafeOn)
 		rcmd("-hpp_gstrafe", GstrafeOff)
+
+		rnc(speed, "hpp_speed", "1")
 		
 }

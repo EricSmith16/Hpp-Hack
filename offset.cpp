@@ -2,6 +2,48 @@
 
 cOffset offset;
 
+void* cOffset::SpeedHackPtr()
+{
+	DWORD Old = NULL;
+	PCHAR String = "Texture load: %6.1fms";
+	DWORD Address = (DWORD)FindMemoryClone(HwBase, HwBase + HwSize, String, strlen(String));
+	PVOID SpeedPtr = (PVOID)*(DWORD*)(FindReference(HwBase, HwBase + HwSize, Address) - 7);
+	if (FarProc((DWORD)SpeedPtr, HwBase, HwEnd))
+		Error("Couldn't find SpeedPtr pointer.");
+	else
+		VirtualProtect(SpeedPtr, sizeof(double), PAGE_READWRITE, &Old);
+	return SpeedPtr;
+}
+
+BOOL cOffset::__comparemem(const UCHAR *buff1, const UCHAR *buff2, UINT size)
+{
+	for (UINT i = 0; i < size; i++, buff1++, buff2++)
+	{
+		if ((*buff1 != *buff2) && (*buff2 != 0xFF))
+			return FALSE;
+	}
+	return TRUE;
+}
+
+ULONG cOffset::__findmemoryclone(const ULONG start, const ULONG end, const ULONG clone, UINT size)
+{
+	for (ULONG ul = start; (ul + size) < end; ul++)
+	{
+		if (CompareMemory(ul, clone, size))
+			return ul;
+	}
+	return NULL;
+}
+
+
+ULONG cOffset::__findreference(const ULONG start, const ULONG end, const ULONG address)
+{
+	UCHAR Pattern[5];
+	Pattern[0] = 0x68;
+	*(ULONG*)&Pattern[1] = address;
+	return FindMemoryClone(start, end, Pattern, sizeof(Pattern) - 1);
+}
+
 void cOffset::GetRenderType()
 {
 	HwDll = (DWORD)GetModuleHandleA( HW_DLL );
@@ -62,6 +104,40 @@ bool cOffset::GetModuleInfo()
 	}
 
 	return ( HwBase && ClBase && HlBase && VgBase );
+}
+
+bool cOffset::GetRendererInfo()
+{
+	DWORD GameUI = (DWORD)GetModuleHandle("GameUI.dll");
+	DWORD vgui = (DWORD)GetModuleHandle("vgui.dll");
+	DWORD vgui2 = (DWORD)GetModuleHandle("vgui2.dll");
+	HLType = RENDERTYPE_UNDEFINED;
+	HwBase = (DWORD)GetModuleHandle("hw.dll");
+	if (HwBase == NULL)
+	{
+		HwBase = (DWORD)GetModuleHandle("sw.dll");
+		if (HwBase == NULL)
+		{
+			HwBase = (DWORD)GetModuleHandle(NULL);
+			if (HwBase == NULL) Error("Invalid module handle.");
+			else HLType = RENDERTYPE_UNDEFINED;
+		}
+		else HLType = RENDERTYPE_SOFTWARE;
+	}
+	else HLType = RENDERTYPE_HARDWARE;
+	HwSize = (DWORD)GetModuleSize(HwBase);
+	if (HwSize == NULL)
+	{
+		switch (HwSize)
+		{
+		case RENDERTYPE_HARDWARE: HwSize = 0x122A000; break;
+		case RENDERTYPE_UNDEFINED: HwSize = 0x2116000; break;
+		case RENDERTYPE_SOFTWARE: HwSize = 0xB53000; break;
+		default: Error("Invalid renderer type.");
+		}
+	}
+	HwEnd = HwBase + HwSize - 1;
+	return (HwBase && GameUI && vgui && vgui2);
 }
 
 void cOffset::Error( char* Msg )
@@ -277,13 +353,6 @@ DWORD cOffset::Absolute( DWORD Address )
 DWORD cOffset::FarProc( DWORD Address , DWORD LB , DWORD HB )
 {
 	return ( ( Address < LB ) || ( Address > HB ) );
-}
-
-DWORD cOffset::FindReference( DWORD start , DWORD end , DWORD Address )
-{
-	char szPattern[] = { 0x68 , 0x00 , 0x00 , 0x00 , 0x00 , 0x00 };
-	*(PDWORD)&szPattern[1] = Address;
-	return FindPattern( szPattern , start , end , 0 );
 }
 
 DWORD cOffset::FindPattern( PCHAR pattern , PCHAR mask , DWORD start , DWORD end , DWORD offset )

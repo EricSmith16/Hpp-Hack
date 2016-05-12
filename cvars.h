@@ -12,10 +12,13 @@ public:
 		nc(bhop_scroll_count)
 		nc(bhop_standup)
 		nc(bhop_standup_start)
+
 		nc(gstrafe_scroll_count)
 		nc(gstrafe_scroll_start)
 		nc(gstrafe_standup)
 		nc(gstrafe_standup_start)
+
+		nc(speed)
 };
 extern cvars_s cvar;
 
