@@ -28,7 +28,7 @@ void function_s::BunnyHop(float frametime, usercmd_s *cmd)
 			return; 
 		}
 	}
-	else if (state != 0 && g_Local.flFallSpeed <= 0) { state = 0; counts = 0; }
+	else if (state != 0) { state = 0; counts = 0; }
 	if (cfunc.Bhop && g_Local.bAlive)
 	{
 		if (cvar.bhop_standup->value && frame_standup >= cvar.bhop_standup_start->value && g_Local.flGroundAngle <= 25) cmd->buttons |= IN_DUCK;
