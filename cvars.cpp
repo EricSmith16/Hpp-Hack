@@ -38,8 +38,6 @@ void cfunc_s::Init()
 		rnc(speed_engine, "hpp_speed_engine", "0")
 
 		rnc(fastrun_nsd, "hpp_fastrun_nsd", "1")
-		rnc(fastrun_sidemove, "hpp_fastrun_sidemove", "138")
-		rnc(fastrun_forwardmove, "hpp_fastrun_forwardmove", "267")
 		rcmd("+hpp_fastrun", FastRunOn)
 		rcmd("-hpp_fastrun", FastRunOff)
 		rcmd("hpp_switch_fastrun", FastRunSwitch)	

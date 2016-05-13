@@ -131,8 +131,8 @@ void function_s::FastRun(struct usercmd_s *cmd)
 			int fadif = yaw;
 			fadif = (fadif + 360) % 360;
 			dir_rig = fadif <= 180;
-			float x = cvar.fastrun_sidemove->value/*135.06374825035877480180939653038*/ * (dir_rig ? -1 : +1);
-			float y = cvar.fastrun_forwardmove->value/*267.87643402987823669025530311859*/;
+			float x = 138.06374825035877480180939653038 * (dir_rig ? -1 : +1);
+			float y = 267.87643402987823669025530311859;
 			float a = DegToRad(aaddtova);
 			float sinA = sin(a);
 			float cosA = cos(a);

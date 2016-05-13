@@ -24,8 +24,6 @@ public:
 		nc(speed_engine)
 
 		nc(fastrun_nsd)
-		nc(fastrun_sidemove)
-		nc(fastrun_forwardmove)
 };
 extern cvars_s cvar;
 
