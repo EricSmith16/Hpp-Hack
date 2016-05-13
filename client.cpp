@@ -98,6 +98,7 @@ void HUD_PlayerMove(struct playermove_s *ppmove, int server)
 	g_Local.iUseHull = ppmove->usehull;
 	g_Local.flMaxSpeed = ppmove->maxspeed;
 	g_Local.iFlags = ppmove->flags;
+	g_Local.fOnLadder = ppmove->movetype == 5;
 	g_Local.flXYspeed = sqrt(POW(ppmove->velocity[0]) + POW(ppmove->velocity[1]));
 	g_Local.flFallSpeed = ppmove->flFallVelocity;
 	g_Local.fVSpeed = ppmove->velocity.Length();
@@ -146,10 +147,17 @@ void CL_CreateMove(float frametime, usercmd_s *cmd, int active)
 	g_Function.CL_CreateMove(frametime, cmd, active);
 }
 
+void V_CalcRefdef(struct ref_params_s *pparams)
+{
+	VectorCopy(pparams->forward, g_Local.vForward);
+	g_Client.V_CalcRefdef(pparams);
+}
+
 void HookFunction()
 {
 	g_pClient->HUD_Frame = HUD_Frame;
 	g_pClient->HUD_Redraw = HUD_Redraw;
 	g_pClient->HUD_PlayerMove = HUD_PlayerMove;
 	g_pClient->CL_CreateMove = CL_CreateMove;
+	g_pClient->V_CalcRefdef = V_CalcRefdef;
 }

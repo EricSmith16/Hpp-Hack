@@ -60,6 +60,7 @@ extern char* BaseDir;
 #define M_PI 3.14159265358979323846
 #define POW(x) ((x)*(x))
 #define DegToRad(Angle)((M_PI/180.0)*Angle)
+#define VectorMul(vec,num,res){(res)[0]=(vec)[0]*(num);(res)[1]=(vec)[1]*(num);(res)[2]=(vec)[2]*(num);}
 
 struct local_s
 {
@@ -74,12 +75,14 @@ struct local_s
 	float fVSpeed;
 	float EdgeOffset;
 	float flMaxSpeed;
+	float fOnLadder;
 	float Height;
 	float flXYspeed;
 	float flGroundAngle;
 	float flFallSpeed;
 	Vector vOrigin;
 	Vector vVelocity;
+	Vector vForward;
 };
 extern local_s g_Local;
 

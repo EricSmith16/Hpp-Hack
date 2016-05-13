@@ -104,8 +104,58 @@ void bug_s::EdgeBug(float frametime, struct usercmd_s *cmd)
 	else state = 0;
 }
 
+void bug_s::WallBug(struct usercmd_s *cmd)
+{
+	static bool lox = false;
+	static int moves = 0;
+	static int dr = 1;
+	if (cfunc.WallBug && g_Local.fOnLadder != 1)
+	{
+		Vector fw = (g_Local.vForward);
+		fw = fw.Normalize();
+		VectorMul(fw, 5, fw);
+		fw[2] = 0;
+		VectorAdd(fw, g_Local.vOrigin, fw);
+		pmtrace_s *trace = g_Engine.PM_TraceLine(g_Local.vOrigin, fw, 1, g_Local.iUseHull, -1);
+		float myang[3] = {};
+		g_Engine.GetViewAngles(myang);
+		if (trace->fraction < 1.0)
+		{
+			if (trace->plane.normal[2] > 0) {}
+			else
+			{
+				if (cvar.wb_duck->value != 0) cmd->buttons |= IN_DUCK;
+				cmd->buttons |= IN_FORWARD;
+				cmd->forwardmove = 176.8;
+				cmd->sidemove = 176.8 * dr;
+				cmd->buttons |= (dr == 1 ? (IN_MOVERIGHT) : (IN_MOVELEFT));
+				if (moves <= 0)
+				{
+					if (lox)
+					{
+						dr = 1;
+						myang[1] += g_Engine.pfnRandomFloat(0, cvar.wb_ang->value);
+						lox = !lox;
+
+					}
+					else if (!lox)
+					{
+						dr = -1;
+						myang[1] -= g_Engine.pfnRandomFloat(0, cvar.wb_ang->value);
+						lox = !lox;
+					}
+					moves = (int)cvar.wb_move->value;
+				}
+				else moves--;
+				g_Engine.SetViewAngles(myang);
+			}
+		}
+	}
+}
+
 void bug_s::CL_CreateMove(float frametime, usercmd_s *cmd)
 {
 	JumpBug(frametime, cmd);
 	EdgeBug(frametime, cmd);
+	WallBug(cmd);
 }

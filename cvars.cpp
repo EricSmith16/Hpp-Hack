@@ -24,6 +24,10 @@ bool cfunc_s::EdgeBug = false;
 void cfunc_s::EdgeBugOn() { EdgeBug = true; }
 void cfunc_s::EdgeBugOff() { EdgeBug = false; }
 
+bool cfunc_s::WallBug = false;
+void cfunc_s::WallBugOn() { WallBug = true; }
+void cfunc_s::WallBugOff() { WallBug = false; }
+
 void cfunc_s::Init()
 {
 	rnc(bhop_scroll_start, "hpp_bhop_scroll_start", "5 9")
@@ -62,4 +66,10 @@ void cfunc_s::Init()
 		rnc(eb_calc, "hpp_edgebug_calculation", "4")
 		rcmd("+hpp_edgebug", EdgeBugOn)
 		rcmd("-hpp_edgebug", EdgeBugOff)
+
+		rnc(wb_duck, "hpp_wallbug_duck", "1")
+		rnc(wb_ang, "hpp_wallbug_angle", "1")
+		rnc(wb_move, "hpp_wallbug_delay", "12")
+		rcmd("+hpp_wallbug", WallBugOn)
+		rcmd("-hpp_wallbug", WallBugOff)
 }

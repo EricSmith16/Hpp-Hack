@@ -33,6 +33,10 @@ public:
 		nc(eb_ddist)
 		nc(eb_speed)
 		nc(eb_calc)
+
+		nc(wb_duck)
+		nc(wb_ang)
+		nc(wb_move)
 };
 extern cvars_s cvar;
 
@@ -60,5 +64,9 @@ public:
 	static bool EdgeBug;
 	static void EdgeBugOn();
 	static void EdgeBugOff();
+
+	static bool WallBug;
+	static void WallBugOn();
+	static void WallBugOff();
 };
 extern cfunc_s cfunc;
