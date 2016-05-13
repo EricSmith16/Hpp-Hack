@@ -28,6 +28,26 @@ bool cfunc_s::WallBug = false;
 void cfunc_s::WallBugOn() { WallBug = true; }
 void cfunc_s::WallBugOff() { WallBug = false; }
 
+bool cfunc_s::forwardm = false;
+bool cfunc_s::moveleft = false;
+bool cfunc_s::moveright = false;
+bool cfunc_s::back = false;
+bool cfunc_s::duck = false;
+bool cfunc_s::jump = false;
+
+void cfunc_s::p_for() { forwardm = true; }
+void cfunc_s::m_for() { forwardm = false; }
+void cfunc_s::p_ml() { moveleft = true; }
+void cfunc_s::m_ml() { moveleft = false; }
+void cfunc_s::p_mr() { moveright = true; }
+void cfunc_s::m_mr() { moveright = false; }
+void cfunc_s::p_bk() { back = true; }
+void cfunc_s::m_bk() { back = false; }
+void cfunc_s::p_dk() { duck = true; }
+void cfunc_s::m_dk() { duck = false; }
+void cfunc_s::p_jp() { jump = true; }
+void cfunc_s::m_jp() { jump = false; }
+
 void cfunc_s::Init()
 {
 	rnc(bhop_scroll_start, "hpp_bhop_scroll_start", "5 9")
@@ -72,4 +92,14 @@ void cfunc_s::Init()
 		rnc(wb_move, "hpp_wallbug_delay", "12")
 		rcmd("+hpp_wallbug", WallBugOn)
 		rcmd("-hpp_wallbug", WallBugOff)
+
+		rnc(show, "hpp_show", "1")
+		rnc(show_color, "hpp_show_color", "200 255 64")
+		rnc(show_time, "hpp_show_time", "1")
+		rnc(show_fps, "hpp_show_fps", "1")
+		rnc(show_copyright, "hpp_show_copyright", "1")
+		rnc(show_keys, "hpp_show_keys", "0")
+		rnc(show_info_color, "hpp_show_info_color", "200 200 64")
+		rnc(show_info_kz, "hpp_show_info_kreedz", "1")
+		rnc(show_info_moves, "hpp_show_info_moves", "1")
 }

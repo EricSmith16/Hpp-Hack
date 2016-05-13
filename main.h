@@ -73,6 +73,7 @@ struct local_s
 	int iIndex;
 	int iFlags;
 	float fVSpeed;
+	float fFps;
 	float EdgeOffset;
 	float flMaxSpeed;
 	float fOnLadder;
@@ -80,6 +81,9 @@ struct local_s
 	float flXYspeed;
 	float flGroundAngle;
 	float flFallSpeed;
+	float EdgeDist;
+	float flsidemove;
+	float flforwardmove;
 	Vector vOrigin;
 	Vector vVelocity;
 	Vector vForward;

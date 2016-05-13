@@ -37,6 +37,16 @@ public:
 		nc(wb_duck)
 		nc(wb_ang)
 		nc(wb_move)
+
+		nc(show)
+		nc(show_color)
+		nc(show_time)
+		nc(show_fps)
+		nc(show_copyright)
+		nc(show_keys)
+		nc(show_info_color)
+		nc(show_info_kz)
+		nc(show_info_moves)
 };
 extern cvars_s cvar;
 
@@ -68,5 +78,25 @@ public:
 	static bool WallBug;
 	static void WallBugOn();
 	static void WallBugOff();
+
+	static bool forwardm;
+	static bool moveleft;
+	static bool moveright;
+	static bool back;
+	static bool duck;
+	static bool jump;
+
+	static void p_for();
+	static void m_for();
+	static void p_ml();
+	static void m_ml();
+	static void p_mr();
+	static void m_mr();
+	static void p_bk();
+	static void m_bk();
+	static void p_dk();
+	static void m_dk();
+	static void p_jp();
+	static void m_jp();
 };
 extern cfunc_s cfunc;

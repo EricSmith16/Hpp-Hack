@@ -183,8 +183,20 @@ void function_s::CL_CreateMove(float frametime, usercmd_s *cmd, int active)
 	if (cvar.speed_engine->value != 0) *g_Net += cvar.speed_engine->value / 1000;
 	cl_entity_s *LocalEnt = g_Engine.GetLocalPlayer();
 	g_Local.bAlive = LocalEnt && !(LocalEnt->curstate.effects & EF_NODRAW) && LocalEnt->player && LocalEnt->curstate.movetype != 6 && LocalEnt->curstate.movetype != 0;
+	g_Local.fFps = 1 / frametime;
+	if (cvar.show->value && cvar.show_keys->value)
+	{
+		if (cmd->buttons&IN_FORWARD) { cfunc.p_for(); } else { cfunc.m_for(); }
+		if (cmd->buttons&IN_MOVELEFT) { cfunc.p_ml(); } else { cfunc.m_ml(); }
+		if (cmd->buttons&IN_MOVERIGHT) { cfunc.p_mr(); } else { cfunc.m_mr(); }
+		if (cmd->buttons&IN_BACK) { cfunc.p_bk(); } else { cfunc.m_bk(); }
+		if (cmd->buttons&IN_DUCK) { cfunc.p_dk(); } else { cfunc.m_dk(); }
+		if (cmd->buttons&IN_JUMP) { cfunc.p_jp(); } else { cfunc.m_jp(); }
+	}
 	BunnyHop(frametime, cmd);
 	GroundStrafe(frametime, cmd);
 	FastRun(cmd);
 	g_Bug.CL_CreateMove(frametime, cmd);
+	g_Local.flsidemove = cmd->sidemove;
+	g_Local.flforwardmove = cmd->forwardmove;
 }

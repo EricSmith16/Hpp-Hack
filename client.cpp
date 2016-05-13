@@ -1,6 +1,8 @@
 #include "client.h"
 #include "functions.h"
 #include "cvars.h"
+#include "calculations.h"
+#include "screeninfo.h"
 
 local_s g_Local;
 player_s g_Player[33];
@@ -89,6 +91,7 @@ void HUD_Redraw(float time, int intermission)
 	g_Client.HUD_Redraw(time, intermission);
 	cl_entity_t *pLocal = g_Engine.GetLocalPlayer();
 	g_Local.iIndex = pLocal->index;
+	g_Screeninfo.HUD_RedRaw();
 }
 
 void HUD_PlayerMove(struct playermove_s *ppmove, int server)
@@ -103,6 +106,8 @@ void HUD_PlayerMove(struct playermove_s *ppmove, int server)
 	g_Local.flFallSpeed = ppmove->flFallVelocity;
 	g_Local.fVSpeed = ppmove->velocity.Length();
 	g_Local.vVelocity = ppmove->velocity;
+	g_Local.EdgeDist = g_Calculation.EdgeDistance();
+	if (g_Local.EdgeDist >= 250) g_Local.EdgeDist = 0;
 	Vector vTemp = ppmove->origin;
 	vTemp[2] -= 8192;
 	pmtrace_t *trace = g_Engine.PM_TraceLine(ppmove->origin, vTemp, 1, ppmove->usehull, -1);
