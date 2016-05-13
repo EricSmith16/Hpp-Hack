@@ -28,6 +28,11 @@ public:
 		nc(jumpbug_auto)
 		nc(jumpbug_slow)
 		nc(jumpbug_slow_speed)
+
+		nc(eb_dist)
+		nc(eb_ddist)
+		nc(eb_speed)
+		nc(eb_calc)
 };
 extern cvars_s cvar;
 
@@ -51,5 +56,9 @@ public:
 	static bool JumpBug;
 	static void JumpBugOn();
 	static void JumpBugOff();
+
+	static bool EdgeBug;
+	static void EdgeBugOn();
+	static void EdgeBugOff();
 };
 extern cfunc_s cfunc;

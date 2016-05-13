@@ -20,6 +20,10 @@ bool cfunc_s::JumpBug = false;
 void cfunc_s::JumpBugOn() { JumpBug = true; }
 void cfunc_s::JumpBugOff() { JumpBug = false; }
 
+bool cfunc_s::EdgeBug = false;
+void cfunc_s::EdgeBugOn() { EdgeBug = true; }
+void cfunc_s::EdgeBugOff() { EdgeBug = false; }
+
 void cfunc_s::Init()
 {
 	rnc(bhop_scroll_start, "hpp_bhop_scroll_start", "5 9")
@@ -51,4 +55,11 @@ void cfunc_s::Init()
 		rnc(jumpbug_slow_speed, "hpp_jumpbug_slow_speed", "1")
 		rcmd("+hpp_jumpbug", JumpBugOn)
 		rcmd("-hpp_jumpbug", JumpBugOff)
+
+		rnc(eb_dist, "hpp_edgebug_dist", "50")
+		rnc(eb_ddist, "hpp_edgebug_duck_dist", "0")
+		rnc(eb_speed, "hpp_edgebug_speed", "35")
+		rnc(eb_calc, "hpp_edgebug_calculation", "4")
+		rcmd("+hpp_edgebug", EdgeBugOn)
+		rcmd("-hpp_edgebug", EdgeBugOff)
 }

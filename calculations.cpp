@@ -84,3 +84,30 @@ void calculation_s::SlowVerticalVel(float to, float frametime, usercmd_s *cmd)
 	if (!cmd->buttons&IN_JUMP && !cmd->buttons&IN_DUCK) cmd->buttons = 0;
 	RotateInvisible(-(va_speed[1] - cmd->viewangles[1]), 0, cmd);
 }
+
+float calculation_s::EdgeDistance()
+{
+#define TraceEdge(x,y){\
+	Vector start=g_Local.vOrigin,airTemp=g_Local.vOrigin;\
+	airTemp[2] -= 8192+8192+8192;\
+	pmtrace_t *gtrace = g_Engine.PM_TraceLine(start, airTemp, 1, g_Local.iUseHull, -1);\
+	vec3_t vDis = (airTemp - g_Local.vOrigin) * gtrace->fraction;\
+	start[2]-=0.1f;\
+	start[2]-=-vDis[2];\
+	Vector end=start;\
+	end[1]+=x*mind;\
+	end[0]+=y*mind;\
+	pmtrace_s* t1 = g_Engine.PM_TraceLine(end,start,1,g_Local.iUseHull,-1);\
+	if(!(t1->startsolid))mind=(t1->endpos-start).Length2D();\
+}
+	float mind = 250;
+	TraceEdge(-1, 0);
+	TraceEdge(1, 0);
+	TraceEdge(0, 1);
+	TraceEdge(0, -1);
+	TraceEdge(-1, -1);
+	TraceEdge(1, 1);
+	TraceEdge(1, -1);
+	TraceEdge(-1, 1);
+	return mind;
+}

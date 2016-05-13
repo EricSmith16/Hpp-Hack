@@ -72,6 +72,8 @@ struct local_s
 	int iIndex;
 	int iFlags;
 	float fVSpeed;
+	float EdgeOffset;
+	float flMaxSpeed;
 	float Height;
 	float flXYspeed;
 	float flGroundAngle;

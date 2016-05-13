@@ -96,6 +96,7 @@ void HUD_PlayerMove(struct playermove_s *ppmove, int server)
 	g_Client.HUD_PlayerMove(ppmove, server);
 	g_Local.vOrigin = ppmove->origin;
 	g_Local.iUseHull = ppmove->usehull;
+	g_Local.flMaxSpeed = ppmove->maxspeed;
 	g_Local.iFlags = ppmove->flags;
 	g_Local.flXYspeed = sqrt(POW(ppmove->velocity[0]) + POW(ppmove->velocity[1]));
 	g_Local.flFallSpeed = ppmove->flFallVelocity;
