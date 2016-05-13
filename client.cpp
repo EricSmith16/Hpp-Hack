@@ -6,6 +6,7 @@ local_s g_Local;
 player_s g_Player[33];
 
 bool FirstFrame = false;
+extern double *g_Net;
 
 void HookUserMessages()
 {
@@ -69,6 +70,8 @@ void HUD_Frame(double time)
 		g_Local.dwSpeedptr = 0;
 		Offset->SpeedPtr = (DWORD)Offset->SpeedHackPtr();
 		g_Local.SpeedPtr = Offset->SpeedPtr;
+		g_Net = (double*)*(PDWORD)((DWORD)g_Engine.pNetAPI->SendRequest + 0x51);
+		if (IsBadReadPtr(g_Net, sizeof(double))) g_Net = (double*)*(PDWORD)((DWORD)g_Engine.pNetAPI->SendRequest + 0x49);
 		g_Screen.iSize = sizeof(SCREENINFO);
 		offset.ConsoleColorInitalize();
 		offset.SVCMessagesInitaizie();
@@ -96,6 +99,7 @@ void HUD_PlayerMove(struct playermove_s *ppmove, int server)
 	g_Local.iFlags = ppmove->flags;
 	g_Local.flXYspeed = sqrt(POW(ppmove->velocity[0]) + POW(ppmove->velocity[1]));
 	g_Local.flFallSpeed = ppmove->flFallVelocity;
+	g_Local.fVSpeed = ppmove->velocity.Length();
 	g_Local.vVelocity = ppmove->velocity;
 	Vector vTemp = ppmove->origin;
 	vTemp[2] -= 8192;

@@ -65,10 +65,13 @@ struct local_s
 {
 	DWORD SpeedPtr;
 	DWORD dwSpeedptr;
+	bool bSlowDown;
 	bool bAlive;
+	bool bPlayerjb;
 	int iUseHull;
 	int iIndex;
 	int iFlags;
+	float fVSpeed;
 	float Height;
 	float flXYspeed;
 	float flGroundAngle;

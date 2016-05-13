@@ -24,6 +24,10 @@ public:
 		nc(speed_engine)
 
 		nc(fastrun_nsd)
+
+		nc(jumpbug_auto)
+		nc(jumpbug_slow)
+		nc(jumpbug_slow_speed)
 };
 extern cvars_s cvar;
 
@@ -43,5 +47,9 @@ public:
 	static void FastRunOn();
 	static void FastRunOff();
 	static void FastRunSwitch();
+
+	static bool JumpBug;
+	static void JumpBugOn();
+	static void JumpBugOff();
 };
 extern cfunc_s cfunc;

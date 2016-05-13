@@ -16,6 +16,10 @@ void cfunc_s::FastRunOn() { FastRun = true; }
 void cfunc_s::FastRunOff() { FastRun = false; }
 void cfunc_s::FastRunSwitch() { FastRun = !FastRun; }
 
+bool cfunc_s::JumpBug = false;
+void cfunc_s::JumpBugOn() { JumpBug = true; }
+void cfunc_s::JumpBugOff() { JumpBug = false; }
+
 void cfunc_s::Init()
 {
 	rnc(bhop_scroll_start, "hpp_bhop_scroll_start", "5 9")
@@ -41,4 +45,10 @@ void cfunc_s::Init()
 		rcmd("+hpp_fastrun", FastRunOn)
 		rcmd("-hpp_fastrun", FastRunOff)
 		rcmd("hpp_switch_fastrun", FastRunSwitch)	
+
+		rnc(jumpbug_auto, "hpp_jumpbug_auto", "0")
+		rnc(jumpbug_slow, "hpp_jumpbug_slow", "100")
+		rnc(jumpbug_slow_speed, "hpp_jumpbug_slow_speed", "1")
+		rcmd("+hpp_jumpbug", JumpBugOn)
+		rcmd("-hpp_jumpbug", JumpBugOff)
 }

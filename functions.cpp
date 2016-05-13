@@ -1,6 +1,7 @@
 #include "functions.h"
 #include "cvars.h"
 #include "calculations.h"
+#include "bugs.h"
 
 function_s g_Function;
 
@@ -185,4 +186,5 @@ void function_s::CL_CreateMove(float frametime, usercmd_s *cmd, int active)
 	BunnyHop(frametime, cmd);
 	GroundStrafe(frametime, cmd);
 	FastRun(cmd);
+	g_Bug.CL_CreateMove(frametime, cmd);
 }

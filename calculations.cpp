@@ -22,3 +22,65 @@ bool calculation_s::ScanFromCvar(const char* str, int* value)
 	value[clrnum] = clrsum;
 	return true;
 }
+
+void calculation_s::MyVectorAngles(const float *forward, float *angles)
+{
+	float tmp, yaw, pitch;
+	if (forward[1] == 0 && forward[0] == 0)
+	{
+		yaw = 0;
+		if (forward[2] > 0) pitch = 270;
+		else pitch = 90;
+	}
+	else
+	{
+		yaw = (atan2(forward[1], forward[0]) * 180 / M_PI);
+		if (yaw < 0) yaw += 360;
+		tmp = sqrt(forward[0] * forward[0] + forward[1] * forward[1]);
+		pitch = (atan2(-forward[2], tmp) * 180 / M_PI);
+		if (pitch < 0) pitch += 360;
+	}
+	angles[0] = pitch;
+	angles[1] = yaw;
+	angles[2] = 0;
+	while (angles[0]<-89) { angles[0] += 180; angles[1] += 180; }
+	while (angles[0]>89) { angles[0] -= 180; angles[1] += 180; }
+	while (angles[1]<-180) { angles[1] += 360; }
+	while (angles[1]>180) { angles[1] -= 360; }
+}
+
+void calculation_s::RotateInvisible(float fixed_yaw, float fixed_pitch, usercmd_s *cmd)
+{
+	Vector viewforward, viewright, viewup, aimforward, aimright, aimup, vTemp;
+	float newforward, newright, newup;
+	float forward = cmd->forwardmove;
+	float right = cmd->sidemove;
+	float up = cmd->upmove;
+	Vector tipo_real_va;
+	VectorCopy(cmd->viewangles, tipo_real_va);
+	g_Engine.pfnAngleVectors(Vector(0.0f, tipo_real_va.y, 0.0f), viewforward, viewright, viewup);
+	tipo_real_va.y += fixed_yaw;
+	g_Engine.pfnAngleVectors(Vector(0.0f, tipo_real_va.y, 0.0f), aimforward, aimright, aimup);
+	newforward = DotProduct(forward * viewforward.Normalize(), aimforward) + DotProduct(right * viewright.Normalize(), aimforward) + DotProduct(up * viewup.Normalize(), aimforward);
+	newright = DotProduct(forward * viewforward.Normalize(), aimright) + DotProduct(right * viewright.Normalize(), aimright) + DotProduct(up * viewup.Normalize(), aimright);
+	newup = DotProduct(forward * viewforward.Normalize(), aimup) + DotProduct(right * viewright.Normalize(), aimup) + DotProduct(up * viewup.Normalize(), aimup);
+	if (fixed_pitch>81) cmd->forwardmove = -newforward;
+	else cmd->forwardmove = newforward;
+	cmd->sidemove = newright;
+	cmd->upmove = newup;
+}
+
+void calculation_s::SlowVerticalVel(float to, float frametime, usercmd_s *cmd)
+{
+	g_Local.bSlowDown = true;
+	float bvel = ((g_Local.fVSpeed + g_Local.fVSpeed*frametime) - to) / (frametime * 100);
+	float vspeed[3] = { g_Local.vVelocity.x / g_Local.fVSpeed,g_Local.vVelocity.y / g_Local.fVSpeed,0.0f };
+	float va_speed[3] = {}; MyVectorAngles(vspeed, va_speed);
+	float adif = va_speed[1] - cmd->viewangles[1];
+	while (adif<-180)adif += 360;
+	while (adif>180)adif -= 360;
+	cmd->forwardmove = -bvel;
+	cmd->sidemove = 0;
+	if (!cmd->buttons&IN_JUMP && !cmd->buttons&IN_DUCK) cmd->buttons = 0;
+	RotateInvisible(-(va_speed[1] - cmd->viewangles[1]), 0, cmd);
+}
