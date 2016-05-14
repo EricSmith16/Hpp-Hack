@@ -9,5 +9,6 @@ public:
 	static void RotateInvisible(float fixed_yaw, float fixed_pitch, usercmd_s *cmd);
 	static float EdgeDistance();
 	static void SlowVerticalVel(float to, float frametime, usercmd_s *cmd);
+	static float *CopyCvar(char* origCvarName, char* newCvarName, char* defaultValue, int origFlags);
 };
 extern calculation_s g_Calculation;

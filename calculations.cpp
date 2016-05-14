@@ -111,3 +111,24 @@ float calculation_s::EdgeDistance()
 	TraceEdge(-1, 1);
 	return mind;
 }
+
+float* calculation_s::CopyCvar(char* origCvarName, char* newCvarName, char* defaultValue, int origFlags)
+{
+	cvar_t* pCvar = g_Engine.pfnGetCvarPointer(origCvarName);
+
+	if (!pCvar)
+		return NULL;
+
+	cvar_t* pNewVar = pCvar;
+	memcpy(pNewVar, pCvar, sizeof(cvar_t));
+
+	char tmp[64];
+	sprintf(tmp, "%s", newCvarName);
+
+	strcpy((char*)pCvar->name, tmp);
+
+	g_Engine.pfnRegisterVariable(origCvarName, defaultValue, origFlags);
+	g_Engine.pfnCvar_Set(newCvarName, defaultValue);
+
+	return &pCvar->value;
+}
