@@ -108,4 +108,7 @@ void cfunc_s::Init()
 		cc("cl_forwardspeed", "hpp_forwardspeed", "400")
 		cc("cl_backspeed", "hpp_backspeed", "400")
 		cc("cl_timeout", "hpp_timeout", "10000")
+
+		rnc(fps_skipframes, "hpp_fps_skipframes", "0")
+		rnc(fps_helper, "hpp_fps_helper", "0")
 }

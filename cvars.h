@@ -49,6 +49,9 @@ public:
 		nc(show_info_color)
 		nc(show_info_kz)
 		nc(show_info_moves)
+
+		nc(fps_skipframes)
+		nc(fps_helper)
 };
 extern cvars_s cvar;
 

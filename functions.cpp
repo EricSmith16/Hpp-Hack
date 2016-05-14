@@ -177,10 +177,31 @@ void function_s::FastRun(struct usercmd_s *cmd)
 	}
 }
 
+void function_s::Skipframes(int value)
+{
+	static int cntavoidf = 0;
+	if (value % 2 != 0) value += 1;
+	if (value != 0)
+	{
+		if (cntavoidf-- <= 0)
+		{
+			cntavoidf = value;
+			g_Engine.Cvar_SetValue("r_norefresh", 0);
+		}
+		else g_Engine.Cvar_SetValue("r_norefresh", 1);
+	}
+	else if (cntavoidf != -7)
+	{
+		g_Engine.Cvar_SetValue("r_norefresh", 0);
+		cntavoidf = -7;
+	}
+}
+
 void function_s::CL_CreateMove(float frametime, usercmd_s *cmd, int active)
 {
 	AdjustSpeed(cvar.speed->value);
 	if (cvar.speed_engine->value != 0) *g_Net += cvar.speed_engine->value / 1000;
+	if (cvar.fps_helper->value > 0) AdjustSpeed((1 / frametime) / (cvar.fps_helper->value));
 	cl_entity_s *LocalEnt = g_Engine.GetLocalPlayer();
 	g_Local.bAlive = LocalEnt && !(LocalEnt->curstate.effects & EF_NODRAW) && LocalEnt->player && LocalEnt->curstate.movetype != 6 && LocalEnt->curstate.movetype != 0;
 	g_Local.fFps = 1 / frametime;
@@ -196,6 +217,7 @@ void function_s::CL_CreateMove(float frametime, usercmd_s *cmd, int active)
 	BunnyHop(frametime, cmd);
 	GroundStrafe(frametime, cmd);
 	FastRun(cmd);
+	Skipframes(cvar.fps_skipframes->value);
 	g_Bug.CL_CreateMove(frametime, cmd);
 	g_Local.flsidemove = cmd->sidemove;
 	g_Local.flforwardmove = cmd->forwardmove;
